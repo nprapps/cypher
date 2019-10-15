@@ -5,8 +5,6 @@ A virtual machine configuration for the NPR News Apps team.
 
 **Work in progress, still experimental**
 
-Current issues: Many tools assume they're running on localhost, including our OAuth sign-in configuration. NPM has issues with symlinks for some modules. Forwarded ports may conflict with local toolchains.
-
 About the name
 --------------
 
@@ -55,24 +53,24 @@ When creating or starting a virtual machine, you can add a ``--provision-with=XX
 Basic usage
 -----------
 
-There's one rule we want to keep in mind: tools and applications run on the VM, but data stays on the host. Following this rule allows us to greatly simplify workflows, and makes it much easier to create or destroy VMs without losing work.
+There's one rule we want to keep in mind: tools and applications run on the VM, but **data and credentials stay on the host**. Following this rule allows us to greatly simplify workflows, and makes it much easier to create or destroy VMs without losing work. You should be able to edit files using the text editor of your choice when working on a project, because the files are still outside the VM.
 
-By default, the Vagrantfile will configure your VM to load the user's home directory as ``~/host``. You should clone repositories from GitHub to your preferred folder *on the host* and then access them from the VM. You can still source environment variables from ``workinprivate`` this way.
+By default, the Vagrantfile will configure your VM to load the user's home directory as ``~/host``. You should clone repositories from GitHub to your preferred folder *on the host* and then access them from the VM. You can still load environment variables from ``workinprivate`` this way. Likewise, keep SSH keys on the host, and include them in your SSH config using ``IdentityFile ~/host/.ssh/certname.pem``.
 
-To access the guest, it's easiest to simply ``vagrant ssh`` into the machine to run commands. You can also reach the guest in a browser or other network services using a local IP of 192.168.187.187. Services running on ports 8000 and 7777 are forwarded to localhost, as well.
+To access the guest, it's easiest to simply ``vagrant ssh`` into the machine to run commands. You can also reach the guest in a browser or other network services using a local IP of 192.168.187.187. Services running on ports 8000 and 7777 are forwarded to localhost, as well, as long as those don't conflict with existing services.
 
 Example
 -------
 
 Let's say I'm setting up our liveblog to run on a Windows machine (which isn't normally possible) by running the tool in the guest.
 
-1. Clone the repo using GitHub Deskop for Windows
+1. Clone the liveblog repo using GitHub Deskop for Windows
 #. Run ``vagrant up`` to start the VM.
 #. Log in with ``vagrant ssh``.
 #. The liveblog requires MongoDB - ``sudo apt-get install mongodb`` to install it.
-#. Set up a virtualenv and install pip dependencies as usual.
+#. Set up a virtualenv and install pip and npm dependencies as usual.
 #. Run ``fab text.get_liveblog`` and ``fab app:7777`` to start the local server.
-#. Load ``192.168.187.187:7777`` in a browser to view the liveblog preview.
+#. Load ``localhost:7777`` in a browser to view the liveblog preview via a forwarded port.
 
 Best practices
 --------------
