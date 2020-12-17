@@ -3,7 +3,7 @@
 # provisioning (run as sudo)
 $root_sh = <<-ROOT
 sudo apt-get update && sudo apt-get upgrade
-sudo apt-get install -y python python-pip python3 python3-pip git poppler-utils imagemagick mongodb
+sudo apt-get install -y python python-pip python3 python3-pip git poppler-utils imagemagick mongodb postgresql
 ROOT
 
 # add cartography libraries and tools
@@ -26,9 +26,10 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
   config.vm.synced_folder Dir.home, "/home/vagrant/host"
   config.vm.network "private_network", ip: "192.168.187.187"
-  config.vm.network "forwarded_port", guest: 8000, host: 8000
+  # config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.network "forwarded_port", guest: 7777, host: 7777
   config.ssh.insert_key = false
+  config.disksize.size = "30GB"
 
   # standard setup
   config.vm.provision "root", type: "shell", inline: $root_sh
